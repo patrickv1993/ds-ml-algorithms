@@ -37,6 +37,16 @@ def read_csv(file_name: str, field_convert_map: dict = {},):
     return csv_dict, n
 
 
+def write_csv(file_name, csv_list, fieldnames,):
+    writer = csv.DictWriter(file_name, fieldnames=fieldnames)
+    writer.writeheader()
+
+    for row in csv_list:
+        writer.writerow(row)
+
+    return
+
+
 def write_json(file_name, json_dict,):
     with open(file_name, "w") as outfile:
         json.dump(json_dict, outfile)

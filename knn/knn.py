@@ -136,7 +136,6 @@ def get_counter_dict(unique_classes, data_groups,):
     return counter_dict
 
 
-
 def decision_function(list_of_classes, class_count_dict,):
     count_dict_copy = class_count_dict.copy()
 
@@ -184,6 +183,29 @@ def format_counter_dict(counter_dict):
     return counter_dict
 
 
+def format_knn_results(full_knn_results, df_dict, ):
+    knn_result_dict = {}
+    fieldnames = ["index"] + _DEFAULT_X_COLUMNS + ["data_group", "predicted_class", "actual_class"]
+    for row in full_knn_results:
+        index = row[0]
+        payload = {
+            "index": index,
+        }
+
+        for k in _DEFAULT_X_COLUMNS:
+            payload[k] = df_dict[k][index]
+
+        extra_payload = {
+            "data_group": row[1],
+            "predicted_class": row[1],
+            "actual_class": row[1],
+        }
+
+        knn_result_dict[index] = {**payload, **extra_payload}
+
+    return knn_result_dict, fieldnames
+
+
 def knn():
     k, train_test_split = configure_run()
     df_dict, n = load_df(
@@ -226,7 +248,7 @@ def knn():
 
     utils.write_json("knn_counter_dict.json", counter_dict,)
 
-    return full_knn_results
+    knn_result_dict, fieldnames = format_knn_results(full_knn_results, df_dict, )
 
 
 if __name__ == "__main__":
