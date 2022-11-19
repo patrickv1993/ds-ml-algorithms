@@ -2,6 +2,7 @@
 from pathlib import Path
 import os
 import csv
+import json
 
 _DATA_FOLDER = "data"
 
@@ -34,6 +35,11 @@ def read_csv(file_name: str, field_convert_map: dict = {},):
                 csv_dict[field] = csv_dict.get(field, []) + [val]
 
     return csv_dict, n
+
+
+def write_json(file_name, json_dict,):
+    with open(file_name, "w") as outfile:
+        json.dump(json_dict, outfile)
 
 
 def dict_keys_to_list(d: dict,):

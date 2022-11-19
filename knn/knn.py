@@ -223,7 +223,10 @@ def knn():
         full_knn_results += get_knn_results(df_dict, nn_dict, class_count_dict, data_group, counter_dict,)
 
     counter_dict = format_counter_dict(counter_dict)
-    return full_knn_results, counter_dict
+
+    utils.write_json("knn_counter_dict.json", counter_dict,)
+
+    return full_knn_results
 
 
 if __name__ == "__main__":
