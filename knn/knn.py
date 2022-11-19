@@ -2,6 +2,7 @@
 from helper import utils
 from helper.constants import REPO_SEED, TRAIN_TEST_SPLIT
 from helper.online import summary_stat_standardization, df_dict_to_distance
+from helper.sampling import sample_and_split
 import random
 
 _DEFAULT_DATA = "iris.csv"
@@ -48,6 +49,12 @@ def knn():
     )
 
     distance_dict = df_dict_to_distance(std_df_dict, n,)
+
+    df_index = list(range(n))
+    test_index, train_index = sample_and_split(
+        sequence=df_index,
+        p=train_test_split,
+    )
 
     return df_dict
 

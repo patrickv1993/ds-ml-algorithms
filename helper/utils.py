@@ -34,3 +34,24 @@ def read_csv(file_name: str, field_convert_map: dict = {},):
                 csv_dict[field] = csv_dict.get(field, []) + [val]
 
     return csv_dict, n
+
+
+def dict_keys_to_list(d: dict,):
+    return list(d.keys())
+
+
+def dict_values_to_list(d: dict,):
+    return list(d.values())
+
+
+def list_subtraction(list1: list, list2: list,):
+    return [l1 for l1 in list1 if l1 not in list2]
+
+
+def list_addition(list1: list, list2: list):
+    return list1 + [l2 for l2 in list2 if l2 not in list1]
+
+
+def lists_to_dict(list1: list, list2: list,):
+    return dict(zip(list1, list2))
+
