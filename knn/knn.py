@@ -246,7 +246,11 @@ def knn():
 
     counter_dict = format_counter_dict(counter_dict)
 
-    utils.write_json("knn_counter_dict.json", counter_dict,)
+    knn_counter_fieldnames = ["data_group", "predicted_class", "actual_class", "count"]
+    utils.write_csv("knn_counters.csv",
+                     counter_dict,
+                     list(range(len(counter_dict))),
+                     knn_counter_fieldnames,)
 
     knn_result_dict, fieldnames = format_knn_results(full_knn_results, df_dict, )
 
