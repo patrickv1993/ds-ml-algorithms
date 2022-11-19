@@ -55,3 +55,7 @@ def list_addition(list1: list, list2: list):
 def lists_to_dict(list1: list, list2: list,):
     return dict(zip(list1, list2))
 
+
+def enumerate_list(list1: list,):
+    return {i: v for i, v in enumerate(list1)}
+

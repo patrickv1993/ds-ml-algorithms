@@ -1,6 +1,6 @@
 
 import random
-from helper.utils import list_subtraction
+from helper.utils import list_subtraction, enumerate_list
 
 
 def get_sample_size(n: int, k: int = None, p: float = None,):
@@ -23,5 +23,6 @@ def do_sample(sequence, sample_func=random.sample, k: int = None, p: float = Non
 
 def sample_and_split(sequence, sample_func=random.sample, k: int = None, p: float = None,):
     sampled_sequence = do_sample(sequence, sample_func, k, p,)
-    unsampled_sequence = list_subtraction(sequence, sampled_sequence)
-    return sampled_sequence, unsampled_sequence
+    enumerated_sampled_sequence = enumerate_list(sampled_sequence)
+    enumerated_unsampled_sequence = enumerate_list(list_subtraction(sequence, sampled_sequence))
+    return enumerated_sampled_sequence, enumerated_unsampled_sequence
