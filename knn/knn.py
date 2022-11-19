@@ -1,7 +1,7 @@
 
 from helper import utils
 from helper.constants import REPO_SEED, TRAIN_TEST_SPLIT
-from helper.online import summary_stat_standardization
+from helper.online import summary_stat_standardization, df_dict_to_distance
 import random
 
 _DEFAULT_DATA = "iris.csv"
@@ -46,6 +46,8 @@ def knn():
         n=n,
         stat_cols=_DEFAULT_X_COLUMNS,
     )
+
+    distance_dict = df_dict_to_distance(std_df_dict, n,)
 
     return df_dict
 

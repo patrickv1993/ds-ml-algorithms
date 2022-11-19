@@ -1,5 +1,5 @@
 from math import sqrt
-
+from math import dist
 
 def init_summary_stat_dict(data: list, n: int,):
     payload = {
@@ -56,3 +56,25 @@ def summary_stat_standardization(
 
     return summary_stat_dict, std_df_dict
 
+
+def df_dict_to_distance(
+        std_df_dict: dict,
+        n: int,):
+    print(1)
+
+    j = 0
+    k = 0
+
+    distance_dict = {}
+
+    while j < n:
+        i = j + 1
+        left_vector = [v.pop(0) for v in std_df_dict.values()]
+        while i < n:
+            right_vector = [v[i - j - 1] for v in std_df_dict.values()]
+            distance_dict[(i, j)] = dist(left_vector, right_vector)
+            k += 1
+            i += 1
+        j += 1
+
+    return distance_dict
