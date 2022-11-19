@@ -94,8 +94,10 @@ def append_rank_dict(rank_dict, d, i, ):
     return rank_dict, min_dist, max_dist
 
 
-def find_k_nearest_neighbors(distance_dict, k, self_index, neighbor_index, ):
+def find_k_nearest_neighbors(distance_dict, k, index_dict, data_group, neighbor_data_group, ):
     nn_dict = {}
+    self_index = index_dict[data_group]
+    neighbor_index = index_dict[neighbor_data_group]
     for j in self_index.values():
         i_list = [i for i in neighbor_index.values() if i != j]
         rank_dict = {}
@@ -147,6 +149,17 @@ def decision_function(list_of_classes, class_count_dict,):
     return predicted_class
 
 
+def get_knn_results(df_dict, nn_dict, class_count_dict, data_group):
+    knn_result_list = []
+    for j in nn_dict[data_group].keys():
+        i_list = [i[0] for i in nn_dict[data_group][j].values()]
+        list_of_classes = [df_dict[_DEFAULT_Y_COLUMN][i] for i in i_list]
+        predicted_class = decision_function(list_of_classes, class_count_dict,)
+        actual_class = df_dict[_DEFAULT_Y_COLUMN][j]
+        knn_result_list.append((j, data_group, predicted_class, actual_class))
+    return knn_result_list
+
+
 def knn():
     k, train_test_split = configure_run()
     df_dict, n = load_df(
@@ -167,17 +180,24 @@ def knn():
         p=train_test_split,
     )
 
-    nn_dict = find_k_nearest_neighbors(distance_dict, k, test_index, train_index)
+    index_dict = {
+        "test": test_index,
+        "train": train_index,
+    }
+
+    nn_dict = {
+        "train": find_k_nearest_neighbors(distance_dict, k, index_dict, "train", "train",),
+        "test": find_k_nearest_neighbors(distance_dict, k, index_dict, "test", "train",)
+    }
 
     y_classes = get_unique_classes(df_dict, y_column=_DEFAULT_Y_COLUMN,)
     class_count_dict = {k: 0 for k in y_classes}
 
-    for j in nn_dict.keys():
-        i_list = [i[0] for i in nn_dict[j].values()]
-        list_of_classes = [df_dict[_DEFAULT_Y_COLUMN][i] for i in i_list]
-        decision_function(list_of_classes, class_count_dict,)
+    full_knn_results = []
+    for data_group in nn_dict.keys():
+        full_knn_results += get_knn_results(df_dict, nn_dict, class_count_dict, data_group)
 
-    return df_dict
+    return full_knn_results
 
 
 if __name__ == "__main__":
