@@ -123,6 +123,20 @@ def get_unique_classes(df_dict, y_column, ):
     return class_list
 
 
+def get_counter_dict(unique_classes, data_groups,):
+    n_c = len(unique_classes)
+
+    counter_dict = {}
+
+    for i in range(n_c):
+        for j in range(n_c):
+            for data_group in data_groups:
+                counter_dict[(data_group, unique_classes[i], unique_classes[j])] = 0
+
+    return counter_dict
+
+
+
 def decision_function(list_of_classes, class_count_dict,):
     count_dict_copy = class_count_dict.copy()
 
@@ -149,15 +163,25 @@ def decision_function(list_of_classes, class_count_dict,):
     return predicted_class
 
 
-def get_knn_results(df_dict, nn_dict, class_count_dict, data_group):
+def get_knn_results(df_dict, nn_dict, class_count_dict, data_group, counter_dict):
     knn_result_list = []
     for j in nn_dict[data_group].keys():
         i_list = [i[0] for i in nn_dict[data_group][j].values()]
         list_of_classes = [df_dict[_DEFAULT_Y_COLUMN][i] for i in i_list]
         predicted_class = decision_function(list_of_classes, class_count_dict,)
         actual_class = df_dict[_DEFAULT_Y_COLUMN][j]
+        counter_dict[(data_group, predicted_class, actual_class)] += 1
         knn_result_list.append((j, data_group, predicted_class, actual_class))
     return knn_result_list
+
+
+def format_counter_dict(counter_dict):
+    counter_dict = utils.enumerate_list([{
+        "data_group": k[0],
+        "predicted_class": k[1],
+        "actual_class": k[2],
+        "count": v} for k, v in counter_dict.items()])
+    return counter_dict
 
 
 def knn():
@@ -192,12 +216,14 @@ def knn():
 
     y_classes = get_unique_classes(df_dict, y_column=_DEFAULT_Y_COLUMN,)
     class_count_dict = {k: 0 for k in y_classes}
+    counter_dict = get_counter_dict(y_classes, ["test", "train"])
 
     full_knn_results = []
     for data_group in nn_dict.keys():
-        full_knn_results += get_knn_results(df_dict, nn_dict, class_count_dict, data_group)
+        full_knn_results += get_knn_results(df_dict, nn_dict, class_count_dict, data_group, counter_dict,)
 
-    return full_knn_results
+    counter_dict = format_counter_dict(counter_dict)
+    return full_knn_results, counter_dict
 
 
 if __name__ == "__main__":
