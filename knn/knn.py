@@ -197,8 +197,8 @@ def format_knn_results(full_knn_results, df_dict, ):
 
         extra_payload = {
             "data_group": row[1],
-            "predicted_class": row[1],
-            "actual_class": row[1],
+            "predicted_class": row[2],
+            "actual_class": row[3],
         }
 
         knn_result_dict[index] = {**payload, **extra_payload}
@@ -249,6 +249,8 @@ def knn():
     utils.write_json("knn_counter_dict.json", counter_dict,)
 
     knn_result_dict, fieldnames = format_knn_results(full_knn_results, df_dict, )
+
+    utils.write_csv("knn_results.csv", knn_result_dict, df_index, fieldnames,)
 
 
 if __name__ == "__main__":

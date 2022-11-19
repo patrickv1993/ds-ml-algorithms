@@ -37,12 +37,13 @@ def read_csv(file_name: str, field_convert_map: dict = {},):
     return csv_dict, n
 
 
-def write_csv(file_name, csv_list, fieldnames,):
-    writer = csv.DictWriter(file_name, fieldnames=fieldnames)
-    writer.writeheader()
+def write_csv(file_name, csv_dict, csv_index, fieldnames,):
+    with open(file_name, "w", newline="") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        writer.writeheader()
 
-    for row in csv_list:
-        writer.writerow(row)
+        for index in csv_index:
+            writer.writerow(csv_dict[index])
 
     return
 
