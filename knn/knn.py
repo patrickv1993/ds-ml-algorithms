@@ -2,7 +2,7 @@
 from helper import utils
 from helper.constants import REPO_SEED, TRAIN_TEST_SPLIT
 from helper.online import summary_stat_standardization, df_dict_to_distance
-from helper.sampling import sample_and_split
+from helper.sampling import sample_and_split, do_sample
 import random
 
 _DEFAULT_DATA = "iris.csv"
@@ -115,6 +115,38 @@ def find_k_nearest_neighbors(distance_dict, k, self_index, neighbor_index, ):
     return nn_dict
 
 
+def get_unique_classes(df_dict, y_column, ):
+    class_list = list(set(df_dict[y_column]))
+    class_list.sort()
+    return class_list
+
+
+def decision_function(list_of_classes, class_count_dict,):
+    count_dict_copy = class_count_dict.copy()
+
+    max_count = 0
+    top_classes = []
+
+    for pred_class in list_of_classes:
+        count_dict_copy[pred_class] += 1
+        new_count = count_dict_copy[pred_class]
+        if new_count == max_count:
+            if pred_class not in top_classes:
+                top_classes += [pred_class]
+        elif new_count > max_count:
+            top_classes = [pred_class]
+            max_count = new_count
+        else:
+            pass
+
+    if len(top_classes) > 1:
+        top_classes = do_sample(top_classes, k=1,)
+
+    predicted_class = top_classes[0]
+
+    return predicted_class
+
+
 def knn():
     k, train_test_split = configure_run()
     df_dict, n = load_df(
@@ -135,8 +167,15 @@ def knn():
         p=train_test_split,
     )
 
-
     nn_dict = find_k_nearest_neighbors(distance_dict, k, test_index, train_index)
+
+    y_classes = get_unique_classes(df_dict, y_column=_DEFAULT_Y_COLUMN,)
+    class_count_dict = {k: 0 for k in y_classes}
+
+    for j in nn_dict.keys():
+        i_list = [i[0] for i in nn_dict[j].values()]
+        list_of_classes = [df_dict[_DEFAULT_Y_COLUMN][i] for i in i_list]
+        decision_function(list_of_classes, class_count_dict,)
 
     return df_dict
 
