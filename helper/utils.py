@@ -22,7 +22,9 @@ def read_csv(file_name: str, field_convert_map: dict = {},):
         csv_reader = csv.DictReader(csv_file)
         field_names = csv_reader.fieldnames
         csv_dict = {}
+        n = 0
         for row in csv_reader:
+            n += 1
             for field in field_names:
                 val = row.get(field, "")
 
@@ -31,4 +33,4 @@ def read_csv(file_name: str, field_convert_map: dict = {},):
 
                 csv_dict[field] = csv_dict.get(field, []) + [val]
 
-    return csv_dict
+    return csv_dict, n

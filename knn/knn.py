@@ -1,6 +1,7 @@
 
 from helper import utils
 from helper.constants import REPO_SEED, TRAIN_TEST_SPLIT
+from helper.online import summary_stat_standardization
 import random
 
 _DEFAULT_DATA = "iris.csv"
@@ -13,6 +14,9 @@ _DEFAULT_DATA_SCHEMA = {
     "Species": "str",
 }
 
+_DEFAULT_X_COLUMNS = ["Sepal.Length", "Sepal.Width", "Petal.Length", "Petal.Width"]
+_DEFAULT_Y_COLUMN = "Species"
+
 _DEFAULT_K = 5
 
 
@@ -24,19 +28,25 @@ def configure_run(seed: int = REPO_SEED,
 
 
 def load_df(file_name: str, schema: dict = {},):
-    df_dict = utils.read_csv(
+    df_dict, n = utils.read_csv(
         file_name=file_name,
         field_convert_map=schema,
     )
-    return df_dict
+    return df_dict, n
 
 
 def knn():
     k, train_test_split = configure_run()
-    df_dict = load_df(
+    df_dict, n = load_df(
         file_name=_DEFAULT_DATA,
         schema=_DEFAULT_DATA_SCHEMA,
     )
+    summary_stat_dict, std_df_dict = summary_stat_standardization(
+        df_dict=df_dict,
+        n=n,
+        stat_cols=_DEFAULT_X_COLUMNS,
+    )
+
     return df_dict
 
 
