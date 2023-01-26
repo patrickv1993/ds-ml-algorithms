@@ -49,6 +49,7 @@ X_index <- sample(1:ncol(Z))
 
 column_df <- data.frame(observed_index=paste0("X", X_index), 
                         true_index=paste0("X", 1:ncol(X)), 
+                        true_coef=coefs,
                         var_type=rep(c("weak", "strong_correlated", "strong_uncorrelated"), 
                                      times=c(k1, k2, k3)))
 column_df <- column_df[order(column_df$observed_index),]
